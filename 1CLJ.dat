@@ -1,0 +1,67 @@
+! inputfile
+
+! reference values
+! variable        = [.. Value 1 ..]
+eps/kB_Ref        =          116.79   ! [eps/kB_Ref] = K
+mRef              =          39.948   ! [mRef] = atomic mass unit
+sigmaRef          =          3.3952   ! [sigmaRef] = Angstroem
+
+!*****************   State point and Simulation   *****************
+! state point
+! variable        = [.. Value 1 ..]
+AnzKomp           =               1   ! [NumComp] = skalar (Integer, 0--99)
+NKomp( 1)         =            4842   ! [NComp] = skalar (Integer)
+rho               =     0.033148148   ! [rho=(N/V)] = reduced 
+T                 =             0.7   ! [T] = reduced
+NPT               =         .FALSE.   ! [NPT] = .TRUE./.FALSE.
+P                 =         0.13351   ! [P] = reduced
+VMasse            =          0.0002   ! [VMasse] = reduced
+
+! Specifications for the algorithm
+! Variable        = [.. Value 1 ..]
+InputFile         =  stc_T07_r6.dat   ! Name InputFile; original:1clj_4842.dat
+dt                =           0.004   ! [dt] = reduced
+rc                =             4.0   ! [rc] = reduziert
+EquiNVTSchritte   =            5000   ! [EquiNVTSchritte] = skalar (Integer)
+EquiNPTSchritte   =               0   ! [EquiNPTSchritte] = skalar (Integer); =0, if NPT=F
+SimSchritte       =          100000   ! [SimSchritte] = skalar (Integer)
+BoxRatio(x)       =             1.0   ! [BoxRatio(x)] = skalar
+BoxRatio(y)       =             1.0   ! [BoxRatio(y)] = skalar
+BoxRatio(z)       =             1.0   ! [BoxRatio(z)] = skalar
+Output            =               1   ! [Output] = skalar (Integer)
+Anzahl Shells     =              60   ! [NShells] = skalar (Integer)
+
+! Specifications for the visualisation
+! Variable        = [.. Value 1 ..]
+Film              =         .FALSE.   ! [Film] = .TRUE./.FALSE.
+BilderMax         =             600   ! [BilderMax] = skalar (Integer)
+FilmAb            =               0   ! [FilmAb] = skalar (Integer)
+OutputVis         =             100   ! [OutputVis] = skalar (Integer)
+
+!*****************   Description of molecules   *****************
+MaxAnzSites       =               1   ! [MaxAnzSites] = skalar (Integer)
+MaxAnzLadungen    =               0   ! [MaxAnzLadungen] = skalar (Integer)
+MaxAnzDipole      =               0   ! [MaxAnzDipole] = skalar (Integer)
+MaxAnzQuadrupole  =               0   ! [MaxAnzQuadrupole] = skalar (Integer)
+
+eps_ReactionField =         1.0E+10   ! [eps_ReactionField] = skalar
+
+
+
+
+! Specifications for component ( 1) :
+! Variable        = [.. Value 1 ..][.. Value 2 ..][.. Value 3 ..][.. Value 4 ..]
+AnzSites          =               1   ! [AnzSites] = skalar (Integer)
+AnzLadungen       =               0   ! [AnzLadungen] = skalar (Integer)
+AnzDipole         =               0   ! [AnzDipole] = skalar (Integer)
+AnzQuadrupole     =               0   ! [AnzQuadrupole] = skalar (Integer)
+
+rSite(1:3,2)      =             0.0            0.0            0.0   ! [rSite] = Angstroem
+
+(eps/kB,m,sig)(1) =          116.79         39.948         3.3952   ! [(eps/kB,m,sig)] = (K,atomare Masseneinheit,Angstroem)
+
+I_Dummy(1:3)      =             0.0            0.0            0.0   ! [I_Dummy] = atomare Masseneinheit * Angstroem^2
+
+! Specifications for visualisation -- colours ;  [colour] = scalar (integer, 0--9)
+! Variable        = [.. Value 1 ..][.. Value 2 ..][.. Value 3 ..] ...
+Farbe(1:1, 1)     =               4
