@@ -2,7 +2,7 @@
 !*** Parameters for density profile                                        ***
 !*****************************************************************************
 
-! liquid and vapour density
+! liquid and vapour density ---- no, actually this is INSIDE and OUTSIDE density
 rhol = 0.0
 DO i=5, 14, 1
   rhol = rhol + 0.1*rhoShells(i,1)
@@ -25,6 +25,37 @@ DO i=1, (NSHElls-20), 1
     rhov = ((10+i-1)*rhov + rhoShells(j,1))/(10+i)
   END IF
 END DO
+
+
+
+! inside and outside pressure
+p_in = 0.0
+DO i=5, 14, 1
+  p_in = p_in + 0.1*((PShells_N(i) + PShells_T(i))*0.5)
+END DO
+
+! DO i=15, NSHells, 1
+!   IF ( ABS(p_in-((PShells_N(i) + PShells_T(i))*0.5)) < 0.1*p_in ) THEN
+!     p_in = ((i-1)*p_in + ((PShells_N(i) + PShells_T(i))*0.5))/i
+!   END IF
+! END DO
+
+
+p_out = 0.0
+DO i=(NShells-10), (NSHells-1), 1
+  p_out = p_out + 0.1*((PShells_N(i) + PShells_T(i))*0.5)
+END DO
+
+! DO i=1, (NSHElls-20), 1
+!   j = NShells-10-i
+!   IF ( ABS(p_out-((PShells_N(i) + PShells_T(i))*0.5)) < 0.2*p_out ) THEN
+!     p_out = ((10+i-1)*p_out + ((PShells_N(i) + PShells_T(i))*0.5))/(10+i)
+!   END IF
+! END DO
+
+
+
+
 
 ! D0 with 1090 (Baidakov et al.)
 r10 = rhov + 0.1*(rhol-rhov)

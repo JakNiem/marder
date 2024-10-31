@@ -45,3 +45,13 @@ The option -fdefault-integer-8 is always required.
 - The file *_POS.dat can be used as an input to restart the simulation.
 
 
+- file *_Gamma.csv containes data concerning density, pressure and surface tension
+
+
+notes:
+
+execute for debug:
+    gfortran -g -o marder -fdefault-integer-8 CMyQI_NPT_RDF.f90
+
+execute for production:
+    gfortran -o marder -fdefault-integer-8 CMyQI_NPT_RDF.f90

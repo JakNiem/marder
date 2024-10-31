@@ -8,6 +8,8 @@ FShells_Mean = 0.0
 PNShells_Mean = 0.0
 PTShells_Mean = 0.0
 
+gammaIntegralTerm = 0.0
+
 DO i=1, N, 1                    ! Loop over Particles
   UCorrShells = 0.0             ! Corrections per particle
   FCorrShells = 0.0

@@ -738,6 +738,7 @@ NSMean = 50
 ALLOCATE( VShells(1:NShells) )
 ALLOCATE( RShells(1:NShells) )
 ALLOCATE( RShells2(1:NShells) )
+ALLOCATE( RShells3(1:NShells) )
 ALLOCATE( rhoShells(1:NShells, 1:AnzKomp) )
 ALLOCATE( rhoShellsT(1:NShells, 1:AnzKomp) )
 ALLOCATE( rhoShellsTemp(1:NShells, 1:AnzKomp) )
@@ -754,6 +755,9 @@ ALLOCATE( PTShells_Mean(1:NShells) )
 ALLOCATE( UShells_Mean(1:NShells) )
 ALLOCATE( FShells_Mean(1:NShells) )
 
+ALLOCATE( gammaIntegralTerm(1:NShells) )
+ALLOCATE( gamma(1:NShells) )
+
 ALLOCATE( ksi(1:N) )
 ALLOCATE( ksi2(1:N) )
 
@@ -764,6 +768,7 @@ ALLOCATE( PShells_T(1:NShells) )
 DO i=1, NShells-1, 1
   RShells(i) = i * drShells
   RShells2(i) = RShells(i)*RShells(i)
+  RShells3(i) = RShells2(i)*RShells(i)
   VShells(i) = VierDPi *( (RShells(i)+drShells05)**3 - (RShells(i)-drShells05)**3 )
 END DO
 RShells(NShells) = NShells * drShells

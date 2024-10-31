@@ -23,9 +23,9 @@
   INTEGER AnzZellNachbarn, BildNr, dZN, i, IARGC, IntSchritt, iZ, j, jZ,&
           MaxIterationen, NmaxZelle, Richtung, Si, Sj, x, xi, xj,&
           y, yi, yj, z, zi, zj, ZT, k, WWCount
-  INTEGER, DIMENSION(1:3) :: kfzZellen, Zellen
+  INTEGER, DIMENSION(1:3) :: Zellen
   INTEGER, ALLOCATABLE, DIMENSION(:) :: FHG, Komp
-  INTEGER, ALLOCATABLE, DIMENSION(:,:) :: ZellNachbar, NSchale
+  INTEGER, ALLOCATABLE, DIMENSION(:,:) :: ZellNachbar
   INTEGER, ALLOCATABLE, DIMENSION(:,:,:) :: NZelle
   INTEGER, ALLOCATABLE, DIMENSION(:,:,:,:) :: Liste
   REAL(8) AtomareMasseDim, AvogadroDim, betaRot, betaRotMax, betaRotMin,&
@@ -36,18 +36,18 @@
 	  Invdr1, Invdr2, drMol2, dtInv2, dtInv4,&
           epsilonRefDim, mRefDim, E2, My2, MyFaktor, MyQFaktor, UMyRF,&
           MySelbstTerm, PartialRijInvdr1, PartialTiInvdr1, PartialTjInvdr1,&
-          PartialGij, pi, QFaktor, qKorr, rc2, LJTerm6, LJTerm12, RFFaktor,&
+          PartialGij, pi, QFaktor, qKorr, rc2, LJTerm6, LJTerm12,&
           sigmaRefDim, sumDruck, sumIw2, sumMv2, sumUpot, sumUpotKorrMy,&
           sumUpotMy, sumUpotE, sumUpotMyQ, sumUpotQ, sumVirialE, sumVirialKorrMy, sumVirialMy,&
           sumVirialMyQ, sumVirialQ, tau, tau1, tau2, TermKlammer, TermU, TermU2,&
           UpotKorrLJ, UPotE, UpotKorrMy, UpotMy, UpotMyQ, UpotQ, UpotSite,&
-          VirialKorrLJ, VirialE, VirialKorrMy, ViriralE, VirialMy, VirialMyQ, VirialQ,&
-          VirialSite, vKorr, wKorr, Zufall, V0, V1, V2, PAktuell, sumrho, MaxSiteCOM
-  REAL(8), DIMENSION(1:3) :: dD, D_n1, dr, drE, drMol, dv, eiXej, eXrij,&
+          VirialKorrLJ, VirialE, VirialKorrMy, VirialMy, VirialMyQ, VirialQ,&
+          VirialSite, vKorr, V0, V1, V2, PAktuell, sumrho, gammaPrefactor
+  REAL(8), DIMENSION(1:3) :: D_n1, dr, drE, drMol, eiXej, eXrij,&
                              Fij, InvLSimBox, InvLZelle, LSimBox, LSimBoxAlt, LZelle,&
                              Mij, Mji, wBody, ZweiInvLSimBox, MRF
   REAL(8), DIMENSION(0:3) :: qKonst, qAlt
-  REAL(8), ALLOCATABLE, DIMENSION(:) :: dtInv2mKomp, mKomp, VolumenSchale
+  REAL(8), ALLOCATABLE, DIMENSION(:) :: dtInv2mKomp, mKomp
   REAL(8), DIMENSION(1:3,1:3) :: A,AT
   REAL(8), DIMENSION(1:4,1:3) :: Q4x3
   REAL(8), ALLOCATABLE, DIMENSION(:,:) :: D, Disp, F, IBody, InvIBody, M, q, r, v, F_v
@@ -58,13 +58,13 @@
   ! variables for spherical lrc
   INTEGER :: NShells, Ki, Kj, MeanIndex, TotalStep, NSMean
   REAL(8) :: drShells, drShells05, VierDPi, factorF, UCorrShells, FCorrTemp, FCorrShells, SumEkin, factorU, &
-             UCorrTemp, UCorrSum, deltaShells, realk, UpotTot, UPotMin, UPotMax, sigma6, sumv, &
-             rcmax, rhol, rhov, Dmin, Dmax, R0, D0, r10, r90, rdash, rlow, &
-             rlowInv, rlowInv2, rdashInv, rdashInv2, factorP, PNCorrTemp, PNCorrShells, PTCorrShells, &
-             PTCorrTemp, VirialTemp, FijTemp, vsquare, dr_nor, drMol_nor, rlow2, rdash2
-  REAL(8), DIMENSION(1:3) :: SystemCOM, SystemCenter, TestVir, ksi_i, ksi_j, rss_tan, rcom_tan
-  REAL(8), ALLOCATABLE, DIMENSION(:) :: VShells, RShells, ksi, rhoShellsAve, RShells2, ksi2, &
-  PShells_N, PShells_T, PNShells_Mean, PTShells_Mean, UShells_Mean, FShells_Mean
+              UCorrTemp, UCorrSum, deltaShells, realk, UpotTot, UPotMin, UPotMax, sigma6, sumv, &
+              rcmax, p_in, p_out, rhol, rhov, Dmin, Dmax, R0, D0, r10, r90, rdash, rlow, &
+              rlowInv, rlowInv2, rdashInv, rdashInv2, factorP, PNCorrTemp, PNCorrShells, PTCorrShells, &
+              PTCorrTemp, VirialTemp, FijTemp, vsquare, dr_nor, drMol_nor, rlow2, rdash2
+  REAL(8), DIMENSION(1:3) :: SystemCOM, SystemCenter, ksi_i, ksi_j, rss_tan, rcom_tan
+  REAL(8), ALLOCATABLE, DIMENSION(:) :: VShells, RShells, ksi, rhoShellsAve, RShells2, RShells3, ksi2, &
+  PShells_N, PShells_T, PNShells_Mean, PTShells_Mean, UShells_Mean, FShells_Mean, gammaIntegralTerm, gamma
   REAL(8), ALLOCATABLE, DIMENSION(:,:) :: rhoShells, rhoShellsTemp, rhoShellsT
   REAL(8), ALLOCATABLE, DIMENSION(:,:,:) :: rhoShellsMean
   INTEGER, ALLOCATABLE, DIMENSION(:) :: PartShells, lowerS, upperS, interS
@@ -493,6 +493,21 @@
             UPotMax = UpotTot/IntSchritt
           END IF
         END IF
+
+        ! calculating gamma:
+        gammaPrefactor = -1.0/8.0*(p_in - p_out)*(p_in - p_out)
+        gammaIntegralTerm(0) = 0.0
+        gamma(0) = 0.0
+        DO i=2, NShells
+            gammaIntegralTerm(i) = gammaIntegralTerm(i-1) + RShells3(i) * (&
+                                    (T*rhoShellsAve(i)/(IntSchritt) + PShells_N(i)/(VShells(i)*(TotalStep+1)))&         ! P_N(i)
+                                    -&
+                                    (T*rhoShellsAve(i-1)/(IntSchritt) + PShells_N(i-1)/(VShells(i-1)*(TotalStep+1)))&  ! P_N(i-1)
+                                    )
+            gamma(i) = sign(abs(gammaPrefactor * gammaIntegralTerm(i))**(1.0/3.0), gammaPrefactor * gammaIntegralTerm(i)) !dirty hack because fortran stinks
+        END DO
+
+
         ! running average of potential energy
         OPEN(12,FILE=TRIM(Dateiname)//'_RAV.csv',POSITION='APPEND',STATUS='OLD')
           WRITE(12,'(I10,";",E20.10,";",E20.10)') IntSchritt, UpotTot/IntSchritt,&
@@ -511,10 +526,23 @@
                       PTShells_Mean(i)
           END DO
         CLOSE(13)
+
+        OPEN(1312,FILE=TRIM(Dateiname)//'_Gamma.csv',STATUS='REPLACE')
+          WRITE(1312,'(A,A)') '            R;        rho;          pN;        pT;        gamma'
+          DO i=1,NShells,1
+            WRITE(1312,'(F12.6,";",F12.6,";",F12.6,";",F12.6,";",F12.6)')&
+                      RShells(i),&
+                      rhoShellsAve(i)/(IntSchritt), &
+                      T*rhoShellsAve(i)/(IntSchritt) + PShells_N(i)/(VShells(i)*(TotalStep+1)), &
+                      T*rhoShellsAve(i)/(IntSchritt) + PShells_T(i)/(VShells(i)*(TotalStep+1)), &
+                      gamma(i)
+          END DO
+        CLOSE(1312)
+
+
         ! averages of normal and tangential part of virial and pressure per shell
         OPEN(49,FILE=TRIM(Dateiname)//'_Pres.csv',STATUS='REPLACE')
-          WRITE(49,'(A,A)') '            R;           Pi_N;           Pi_T;           &
-            p_N;          p_T'
+          WRITE(49,'(A,A)') '            R;           Pi_N;           Pi_T;           p_N;          p_T'
           DO i=1,NShells,1
             WRITE(49,'(F12.8,";",F12.8,";",F14.8,";",F14.8,";",F14.8)') &
                     RShells(i), &
