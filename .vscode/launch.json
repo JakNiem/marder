@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/marder",    // <-- Change this
+            "args": ["T07_r6"],                               // <-- Change this
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",              // <-- And maybe this
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "compile"
+        }
+    ]
+}

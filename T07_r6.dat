@@ -10,7 +10,7 @@ sigmaRef          =          3.3952   ! [sigmaRef] = Angstroem
 ! state point
 ! variable        = [.. Value 1 ..]
 AnzKomp           =               1   ! [NumComp] = skalar (Integer, 0--99)
-NKomp( 1)         =            4842   ! [NComp] = skalar (Integer)
+NKomp( 1)         =             895   ! [NComp] = skalar (Integer)
 rho               =     0.033148148   ! [rho=(N/V)] = reduced 
 T                 =             0.7   ! [T] = reduced
 NPT               =         .FALSE.   ! [NPT] = .TRUE./.FALSE.
@@ -19,16 +19,16 @@ VMasse            =          0.0002   ! [VMasse] = reduced
 
 ! Specifications for the algorithm
 ! Variable        = [.. Value 1 ..]
-InputFile         =   1clj_4842.dat   ! Name InputFile; original:1clj_4842.dat
-dt                =           0.004   ! [dt] = reduced
-rc                =             4.0   ! [rc] = reduziert
+InputFile         =   particles.dat   ! Name InputFile; original: 1clj_4842.dat
+dt                =           0.004   ! [dt] = fs
+rc                =             2.5   ! [rc] = reduziert
 EquiNVTSchritte   =            5000   ! [EquiNVTSchritte] = skalar (Integer)
 EquiNPTSchritte   =               0   ! [EquiNPTSchritte] = skalar (Integer); =0, if NPT=F
 SimSchritte       =          100000   ! [SimSchritte] = skalar (Integer)
 BoxRatio(x)       =             1.0   ! [BoxRatio(x)] = skalar
 BoxRatio(y)       =             1.0   ! [BoxRatio(y)] = skalar
 BoxRatio(z)       =             1.0   ! [BoxRatio(z)] = skalar
-Output            =             100   ! [Output] = skalar (Integer)
+Output            =            1000   ! [Output] = skalar (Integer)
 Anzahl Shells     =              60   ! [NShells] = skalar (Integer)
 
 ! Specifications for the visualisation
